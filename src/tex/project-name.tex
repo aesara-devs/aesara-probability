@@ -1,0 +1,84 @@
+%
+% Example tex file setup
+%
+% brandonwillard@gmail.com
+%
+\RequirePackage{snapshot}
+\documentclass[12pt]{article} 
+\usepackage[slantedGreek]{mathpazo}
+\usepackage{amsmath,amssymb,amsthm,amsfonts}
+\usepackage[left=1.25in,top=1.0in,right=1.25in,bottom=1.0in]{geometry}
+\usepackage[pdftex]{graphicx}
+\usepackage{mathtools}
+\usepackage{subcaption}
+\setcounter{MaxMatrixCols}{30}
+\usepackage{suffix}
+\usepackage{color}
+\usepackage{todonotes}
+\usepackage{setspace}
+
+\usepackage{draftwatermark}
+\SetWatermarkScale{1}
+\SetWatermarkLightness{0.90}
+
+\usepackage{datetime}
+
+% this order is important
+\RequirePackage[hyphens]{url}
+\RequirePackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage[authoryear]{natbib}
+
+\newdateformat{monthyear}{\monthname[\THEMONTH] \THEYEAR}
+
+\allowdisplaybreaks
+
+
+\include{math-commands}
+\graphicspath{{../../figures/}{../figures/}{./figures/}{./}}
+
+\vspace{-0.7in}
+\title{A Title}
+\author{
+  Brandon T. Willard \\
+  \textit{Booth School of Business} \\
+  \textit{University of Chicago} 
+  \footnote{bwillard@uchicago.edu } 
+  \and
+  Coauthor \\
+  \textit{Place} \\
+  \textit{City} 
+  \footnote{ email: }
+}
+\date{
+  First Draft: \\
+  This Draft: \monthyear\today{}
+}
+
+\begin{document}
+
+\maketitle
+\begin{abstract}
+  \noindent 
+  An abstract
+  \vspace{0.1in}
+  \noindent Keywords: Deep Learning; Pearson; Cook's distance; Influential
+  Data; Multi-Class Logistic.
+\end{abstract}
+
+\newpage
+\singlespacing
+\section{Introduction}
+
+An introduction.
+
+\newpage
+\bibliographystyle{plainnat}
+\bibliography{project-name}
+
+\begin{appendix}
+\end{appendix}
+
+\end{document}
+
+
+

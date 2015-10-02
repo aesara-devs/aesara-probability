@@ -1,0 +1,143 @@
+
+<<knit_cmd, echo = FALSE, include=FALSE, cache=FALSE, eval=FALSE>>=
+# This is useful for avoiding the need to reload the data
+# in memory when continuously editing.
+# Probably better if you have an editor that will run these via a 
+# key mapping (e.g. `\kn` with vim-r-plugin).
+knitr::knit("project-name.rnw")
+system("make project-name.pdf")
+@
+
+<<setup, echo = FALSE, include=FALSE, cache=FALSE, eval=TRUE>>=
+library(knitr)
+knit_hooks$set(document = function(x) {
+  sub('\\usepackage[]{color}'
+      , '\\usepackage[]{xcolor}'
+      , x
+      , fixed = TRUE)
+})
+# set global chunk options
+opts_chunk$set(fig.path='../../figures/'
+               , fig.align='center'
+               , fig.show='hold'
+               , fig.width=7
+               , fig.height=6 
+               , fig.keep='all'
+               , fig.lp="fig:"
+               , dev='pdf'
+               , cache=TRUE
+               , cache.lazy=FALSE
+               , autodep=TRUE
+               , tidy=FALSE
+               #, strip.white=FALSE
+               , results='tex'
+               , size='tiny'
+               , warning=FALSE
+               , echo=FALSE
+               )
+options(width=90
+        #, formatR.arrow=TRUE
+        #, contrasts=c("unordered"="contr.sum"
+        #              , "ordered"="contr.poly")
+        , contrasts=c("unordered"="contr.treatment"
+                      , "ordered"="contr.poly")
+        )
+#library(dplyr)
+#library(tidyr)
+#library(ggplot2)
+#library(gridExtra)
+#theme_set(theme_bw())
+#library(Matrix)
+#library(xtable)
+#library(knitron)
+@
+
+\documentclass[12pt]{article}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{todonotes}
+\usepackage{paralist}
+\usepackage{breqn}
+\usepackage[top=8pc,bottom=8pc,left=8pc,right=8pc]{geometry}
+%\usepackage{algorithm}
+%\usepackage{algpseudocode}
+\usepackage{datetime}
+\PassOptionsToPackage{pdftex}{graphicx}
+%\usepackage[pdftex]{graphicx}
+
+
+% this order is important
+\RequirePackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{natbib}
+
+%\usepackage{breqn}
+
+\newdateformat{monthyear}{\monthname[\THEMONTH] \THEYEAR}
+
+\include{math-commands}
+\graphicspath{{../../figures/}{../figures/}{./figures/}{./}}
+
+
+\title{A Title}
+\author{
+  Some authors
+}
+\date{This Draft: \monthyear\today{}}
+
+\begin{document}
+
+\maketitle
+\begin{abstract}
+  \noindent 
+  Abstract here
+\end{abstract}
+
+\section{Introduction}
+\label{sec:introduction}
+
+Define some variable, don't show it or produce any output whatsoever.
+<< def_some_var_chunk, echo=FALSE, include=FALSE, eval=TRUE, cache=FALSE >>=
+const.demand.eval = TRUE
+some.var = "hi"
+@
+Print the variable inline: \Sexpr{some.var}.
+
+Print some code to a file via a custom \texttt{knitr} chunk engine.
+Good for tricking your editor and/or latex into doing some syntax highlighting
+in another language and other such things.
+<< stan_functions_model, echo=TRUE, eval=TRUE, engine='cat', engine.opts=list(file="demand_functions.stan", lang="stan") >>=
+  functions {
+    real poisson_log(real y, real lambda) {
+      if (y >= 0 && lambda >= 0) {
+        return(y * log(lambda) - lambda - lgamma(y+1));
+      } else {
+        return(negative_infinity());
+      }
+    }
+  }
+@
+
+A chunk that's evaluated based on an \texttt{R} variable, and explicitly
+states cache dependency on a specific chunk.
+<< echo=TRUE, eval=const.demand.eval, dependson=c("def_some_var_chunk") >>=
+print("yo")
+@
+
+Figure~\ref{fig:example_fig} is produced by \texttt{knitr}.
+<< example_fig, fig.cap="A figure caption", echo=FALSE >>=
+plot(rnorm(100))
+@
+
+Table~\ref{tab:example_table} is also produced by \texttt{knitr}.
+<< example_table_chunk, echo=FALSE, results="asis" >>=
+a.table = xtable(iris
+                 , caption="A table caption with greek: $\\beta$"
+                 , label="tab:example_table")
+print(a.table, include.rownames = FALSE)
+@
+
+\bibliographystyle{plainnat}
+\bibliography{project-name}
+
+\end{document}
+
+
