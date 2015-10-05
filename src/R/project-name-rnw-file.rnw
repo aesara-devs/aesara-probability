@@ -4,12 +4,17 @@
 # in memory when continuously editing.
 # Probably better if you have an editor that will run these via a 
 # key mapping (e.g. `\kn` with vim-r-plugin).
-knitr::knit("project-name.rnw")
+knitr::knit("project-name.rnw", output="../tex")
 system("make project-name.pdf")
 @
 
 <<setup, echo = FALSE, include=FALSE, cache=FALSE, eval=TRUE>>=
 library(knitr)
+# http://yihui.name/knitr/options/#package_options
+opts_knit$set(verbose = TRUE
+              , concordance = FALSE 
+              , fig.path = file.path(normalizePath('../../'), "figures/")
+              )
 knit_hooks$set(document = function(x) {
   sub('\\usepackage[]{color}'
       , '\\usepackage[]{xcolor}'
@@ -17,38 +22,30 @@ knit_hooks$set(document = function(x) {
       , fixed = TRUE)
 })
 # set global chunk options
-opts_chunk$set(fig.path='../../figures/'
-               , fig.align='center'
-               , fig.show='hold'
-               , fig.width=7
-               , fig.height=6 
-               , fig.keep='all'
-               , fig.lp="fig:"
-               , dev='pdf'
-               , cache=TRUE
-               , cache.lazy=FALSE
-               , autodep=TRUE
-               , tidy=FALSE
-               #, strip.white=FALSE
-               , results='tex'
-               , size='tiny'
-               , warning=FALSE
-               , echo=FALSE
+opts_chunk$set(fig.path = file.path(normalizePath('../../'), "figures/")
+               , fig.alignl = 'center'
+               , fig.show = 'hold'
+               , fig.width = 7
+               , fig.height = 6 
+               , fig.keepl = 'all'
+               , fig.lp = "fig:"
+               , dev = 'pdf'
+               , cache = TRUE
+               , cache.lazy = FALSE
+               , autodep = TRUE
+               , tidy = FALSE
+               , results = 'tex'
+               , size = 'tiny'
+               , warning = FALSE
+               , echo = FALSE
                )
-options(width=90
-        #, formatR.arrow=TRUE
-        #, contrasts=c("unordered"="contr.sum"
-        #              , "ordered"="contr.poly")
-        , contrasts=c("unordered"="contr.treatment"
-                      , "ordered"="contr.poly")
-        )
 #library(dplyr)
 #library(tidyr)
 #library(ggplot2)
 #library(gridExtra)
 #theme_set(theme_bw())
 #library(Matrix)
-#library(xtable)
+library(xtable)
 #library(knitron)
 @
 
@@ -95,16 +92,16 @@ options(width=90
 \label{sec:introduction}
 
 Define some variable, don't show it or produce any output whatsoever.
-<< def_some_var_chunk, echo=FALSE, include=FALSE, eval=TRUE, cache=FALSE >>=
-const.demand.eval = TRUE
+<< def_some_var_chunk, echo=FALSE, include=FALSE, eval=TRUE, cache=TRUE >>=
+const.eval = TRUE
 some.var = "hi"
 @
-Print the variable inline: \Sexpr{some.var}.
+Print a variable inline: \Sexpr{some.var}.
 
 Print some code to a file via a custom \texttt{knitr} chunk engine.
 Good for tricking your editor and/or latex into doing some syntax highlighting
 in another language and other such things.
-<< stan_functions_model, echo=TRUE, eval=TRUE, engine='cat', engine.opts=list(file="demand_functions.stan", lang="stan") >>=
+<< stan_functions_model, echo=TRUE, eval=TRUE, engine='cat', engine.opts=list(file="some_functions.stan", lang="stan") >>=
   functions {
     real poisson_log(real y, real lambda) {
       if (y >= 0 && lambda >= 0) {
@@ -116,9 +113,21 @@ in another language and other such things.
   }
 @
 
+Better yet, there's a \texttt{Stan} engine:
+<< stan_functions_model_2, echo=TRUE, eval=TRUE, engine='stan', engine.opts=list(x="some_model") >>=
+  model {
+    // nothing here.  
+  }
+@
+The \texttt{Stan} model is now a variable with the name we passed the engine, 
+i.e. \texttt{some_model}:
+<< echo = TRUE >>=
+print(some_model)
+@
+
 A chunk that's evaluated based on an \texttt{R} variable, and explicitly
 states cache dependency on a specific chunk.
-<< echo=TRUE, eval=const.demand.eval, dependson=c("def_some_var_chunk") >>=
+<< echo=TRUE, eval=const.eval, dependson=c("def_some_var_chunk") >>=
 print("yo")
 @
 
@@ -139,5 +148,4 @@ print(a.table, include.rownames = FALSE)
 \bibliography{project-name}
 
 \end{document}
-
 

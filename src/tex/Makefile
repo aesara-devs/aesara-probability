@@ -22,5 +22,6 @@ PDFLATEX = "pdflatex -shell-escape -file-line-error -interaction=nonstopmode -sy
 		$(realpath $<)
 
 clean:
+	# TODO: get rid of *.synctex.gz files in output dir
 	@cd $(DEST) && latexmk -C -bibtex ${PDF_FILES}
  
