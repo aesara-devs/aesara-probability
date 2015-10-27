@@ -36,7 +36,6 @@
 \include{math-commands}
 \graphicspath{{../../figures/}{../figures/}{./figures/}{./}}
 
-\vspace{-0.7in}
 \title{A Title}
 \author{
   Brandon T. Willard \\
@@ -60,9 +59,8 @@
 \begin{abstract}
   \noindent 
   An abstract
-  \vspace{0.1in}
-  \noindent Keywords: Deep Learning; Pearson; Cook's distance; Influential
-  Data; Multi-Class Logistic.
+
+  \noindent Keywords: 
 \end{abstract}
 
 \newpage
@@ -71,11 +69,20 @@
 
 An introduction.
 
+\begin{figure}[t]
+  \begin{center}
+  \includegraphics[scale=0.5]{some-figure.pdf}
+  \caption{A caption for the figure.} 
+  \label{fig:figure_label}
+  \end{center}
+\end{figure}
+
 \newpage
 \bibliographystyle{plainnat}
 \bibliography{project-name}
 
 \begin{appendix}
+  Appendix stuff.
 \end{appendix}
 
 \end{document}
