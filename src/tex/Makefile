@@ -13,10 +13,15 @@ DEST = $(abspath ../../output)
 # 
 PDFLATEX = "pdflatex -shell-escape -file-line-error -interaction=nonstopmode -synctex=1"
 
+#
+# the *_line variables will (hopefully) stop unnecessary linebreaks in
+# the pdflatex output.  such linebreaks can break error message parsing.
+#
 %.pdf: %.tex
 	@mkdir -p $(DEST)
 	@cd $(DEST)
-	@openout_any=a latexmk -recorder -pdf -bibtex -pdflatex="$(PDFLATEX)"\
+	@max_print_line=1000 error_line=254 half_error_line=238 openout_any=a\
+  							 latexmk -pdf -bibtex -pdflatex=$(PDFLATEX)\
 		-jobname=$(DEST)/$(<:%.tex=%)\
 		-use-make\
 		$(realpath $<)

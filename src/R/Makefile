@@ -28,7 +28,7 @@ DEST = $(abspath ../../output)
 	make -C $(TEXDIR) -f Makefile $@
 
 ../tex/%.tex: %.rnw
-	R -e 'library(knitr); knit("$<")'
+	Rscript --vanilla --default-packages=stats,base,knitr -e 'opts_chunk$$set(out.format="latex"); knit("$<", "$(addsuffix .tex, $(basename $<))")'
 	mv -f $(addsuffix .tex, $(basename $<)) $(TEXDIR)
 
 clean: clean-tex clean-knitr

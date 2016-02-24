@@ -32,6 +32,7 @@ opts_chunk$set(fig.path = file.path(normalizePath('../../'), "figures/")
                , dev = 'pdf'
                , cache = TRUE
                , cache.lazy = FALSE
+               , cache.path = paste0("cache_", knitr::current_input(), .Platform$file.sep) 
                , autodep = TRUE
                , tidy = FALSE
                , results = 'tex'
@@ -46,7 +47,6 @@ opts_chunk$set(fig.path = file.path(normalizePath('../../'), "figures/")
 #theme_set(theme_bw())
 #library(Matrix)
 library(xtable)
-#library(knitron)
 @
 
 \documentclass[12pt]{article}

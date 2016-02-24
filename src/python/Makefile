@@ -1,4 +1,16 @@
-.PHONY: all clean
+#
+# An example Makefile that builds using Pweave and latexmk.
+# The tex file are intermediate/temporary files in this setting,
+# although some of the commented code could save tex results
+# in a separate tex directory (see the R example).
+#
+# There is also a commented line that compiles Python noweb using
+# R's knitr and knitron packages.
+#
+#
+
+.PHONY: all clean clean-tex clean-pweave clean-html clean-md
+#.PRECIOUS: ../tex/%.tex
 
 PNW_FILES = $(wildcard *.pnw) $(wildcard *.Pnw)
 TEXW_FILES = $(wildcard *.texw)
@@ -25,6 +37,7 @@ endif
 PDFLATEX = "pdflatex -interaction nonstopmode -shell-escape "
 SRCDIR = $(realpath $(dir $<))
 DEST = $(abspath ../../output)
+#TEXDIR = $(abspath ../tex)
 
 # add citations with:
 # --biblio file.bib --csl chicago-author-date.csl 
@@ -42,19 +55,38 @@ all: $(HTML_FILES) $(PDF_FILES)
 
 %.tex: %.texw
 	Pweave -f texminted -c -d $<
-	#R -e 'library(knitr); opts_chunk$$set(engine="python", out.format="latex"); Sweave2knitr("$<", output="$<.rnw"); knit("$<.rnw")'
+	#Rscript --vanilla --default-packages=stats,base,knitr,knitron -e 'opts_chunk$$set(out.format="latex"); knit("$<", "$(addsuffix .tex, $(basename $<))")'
 
 %.pdf: %.tex
-	openout_any=a latexmk -pdf -bibtex -pdflatex=$(PDFLATEX)\
+	@max_print_line=1000 error_line=254 half_error_line=238 openout_any=a\
+  							 latexmk -pdf -bibtex -pdflatex=$(PDFLATEX)\
 		-jobname=$(DEST)/$(<:%.tex=%)\
 		-use-make\
 		$(realpath $<)
 
-clean:
-	-cd $(DEST) && latexmk -f -C -bibtex ${PDF_FILES}
-	-latexmk -f -C -bibtex ${PDF_FILES} 
-	-$(RM) -rf cache
-	-$(RM) -rf figures
+#../tex/%.tex: %.rnw
+#	R -e 'library(knitr); knit("$<")'
+#	mv -f $(addsuffix .tex, $(basename $<)) $(TEXDIR)
+
+#%.pdf: ../tex/%.tex
+#	# in the case that the file was knit'ed outside of this Makefile
+#	# and not moved to the tex directory, move it now.
+#	-mv -f $(addsuffix .tex, $(basename $<)) $(TEXDIR)
+#	make -C $(TEXDIR) -f Makefile $@
+
+clean: clean-tex clean-pweave clean-html clean-md
+
+clean-html:
 	-$(RM) *.html
 
+clean-md:
+	-$(RM) *.html
+
+clean-tex:
+	-cd $(DEST) && latexmk -f -C -bibtex ${PDF_FILES}
+	-latexmk -f -C -bibtex ${PDF_FILES} 
+
+clean-pweave:
+	-$(RM) -rf cache
+	-$(RM) -rf figures
 
