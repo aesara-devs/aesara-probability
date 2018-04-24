@@ -1,0 +1,142 @@
+.project{ 
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+    overflow: hidden;
+}
+.project:before {
+    name: "";
+    content: attr(name);
+    white-space: nowrap;
+    font-weight: bold;
+    font-style: normal;
+}
+
+ul.project-links {
+  float: right;
+  position: relative;
+  list-style-type: none;
+  margin: 0;
+  padding: 0px;
+  overflow: hidden;
+}
+ul.project-links li {
+  float: right;
+  padding: 3px;
+}
+
+/* 
+ *
+ * The following was originally inspired by 
+ * http://drz.ac/2013/01/17/latex-theorem-like-environments-for-the-web/ 
+ *
+ */
+.theorem { 
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.theorem:before {
+    env-number: "";
+    title-name: "";
+    content: "Theorem " attr(env-number) ". " attr(title-name);
+    font-weight: bold;
+    font-style: normal;
+}
+.lemma {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.lemma:before {
+    env-number: "";
+    title-name: "";
+    content: "Lemma " attr(env-number) ". " attr(title-name);
+    font-weight: bold;
+    font-style: normal;
+}
+.corollary {
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.corollary:before {
+    env-number: "";
+    title-name: "";
+    content: "Corollary " attr(env-number) ". " attr(title-name);
+    font-weight: bold;
+    font-style: normal;
+}
+.proof {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+    overflow: auto;
+}
+.proof:before {
+    env-number: "";
+    title-name: "";
+    content: "Proof " attr(env-number) ". " attr(title-name);
+    font-style: italic;
+}
+.proof:after {
+    /* content: "\A\25FC"; */
+    /* white-space: pre-wrap; */
+    content: "\25FC";
+    float: right;
+}
+.definition {
+    display: block;
+    margin: 12px 0;
+    font-style: normal;
+}
+.definition:before {
+    env-number: "";
+    title-name: "";
+    content: "Definition " attr(env-number) ". " attr(title-name);
+    font-weight: bold;
+    font-style: normal;
+}
+.example{
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.example:before {
+    env-number: "";
+    title-name: "";
+    content: "Example " attr(env-number) ". " attr(title-name);
+    font-weight: bold;
+    font-style: normal;
+}
+.proposition{
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.proposition:before {
+    env-number: "";
+    title-name: "";
+    content: "Proposition " attr(env-number) ". " attr(title-name);
+    font-weight: bold;
+    font-style: normal;
+}
+.remark{
+    display: block;
+    margin: 12px 0;
+    font-style: italic;
+}
+.remark:before {
+    env-number: "";
+    title-name: "";
+    content: "Remark " attr(env-number) ". " attr(title-name);
+    font-weight: bold;
+    font-style: normal;
+}
+
+/* .references{ */
+/*   display: block; */
+/*   margin: 12px 0; */
+/*   font-style: italic; */
+/* } */
+

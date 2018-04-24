@@ -1,19 +1,9 @@
-
-.PHONY: all clean 
-
-DEP_FILES = $(wildcard ./output/*.dep)
+.PHONY: all clean
 
 all: 
-	mkdir -p figures
-	mkdir -p output
 	make -C src/tex -f Makefile
 
 clean:
-	rm -rf output
-	rm -rf figures
- 
-bundle: $(DEP_FILES) 
-	make -C src/tex -f Makefile
-	TEXINPUTS=${TEXINPUTS}:./src/tex:./figures:./output bundledoc --verbose --localonly --nokeepdirs --include="output/*.bbl" --texfile=./src/tex/$(notdir $(<:%.dep=%.tex)) $<
-
-
+	for MAKEFILE_DIR in $$(egrep -l '^clean:' src/**/Makefile) ; do \
+		make -C $$(dirname $${MAKEFILE_DIR}) -f Makefile clean; \
+	done

@@ -9,72 +9,61 @@
 #
 #
 
-.PHONY: all clean clean-tex clean-pweave clean-html clean-md
-#.PRECIOUS: ../tex/%.tex
+SRC_DIR = $(realpath $(dir $<))
+DEST_DIR = $(abspath ../../output)
+FIG_DIR = $(abspath ../../figures)
+TEX_DIR = $(abspath ../tex)
+
+.PHONY: all clean clean-pdf clean-html clean-md %.pdf %.tex
+.PRECIOUS: $(TEX_DIR)/%.tex
 
 PNW_FILES = $(wildcard *.pnw) $(wildcard *.Pnw)
 TEXW_FILES = $(wildcard *.texw)
-PDF_FILES = $(addsuffix .pdf, $(basename $(TEXW_FILES))) 
-HTML_FILES = $(addsuffix .html, $(basename $(PNW_FILES)))
- 
+TEX_FILES = $(addsuffix .tex, $(basename ${TEXW_FILES}))
+PDF_FILES = $(addsuffix .pdf, $(basename ${TEXW_FILES}))
+HTML_FILES = $(addsuffix .html, $(basename ${PNW_FILES}))
+
 PANDOC_EXTS = +tex_math_dollars+yaml_metadata_block+autolink_bare_uris+ascii_identifiers+tex_math_single_backslash+latex_macros+footnotes+inline_notes
 #+citations
-PANDOC_OPTIONS = --smart --toc --self-contained -s --mathjax 
+PANDOC_OPTIONS = --smart --toc --self-contained -s --mathjax
 #--filter pandoc-citeproc
+# add citations with:
+# --biblio file.bib --csl chicago-author-date.csl
 
-HTML_DEPS = $(wildcard _output.yaml) 
-ifneq ($(wildcard include/before_body.html),) 
-PANDOC_OPTIONS += -H include/before_body.html 
+HTML_DEPS = $(wildcard _output.yaml)
+ifneq ($(wildcard include/before_body.html),)
+PANDOC_OPTIONS += -H include/before_body.html
 HTML_DEPS += include/before_body.html
 endif
 
-ifneq ($(wildcard include/after_body.html),) 
-PANDOC_OPTIONS += -A include/after_body.html 
+ifneq ($(wildcard include/after_body.html),)
+PANDOC_OPTIONS += -A include/after_body.html
 HTML_DEPS += include/after_body.html
 endif
 
-#PDF_DEPS = ""
-PDFLATEX = "pdflatex -interaction nonstopmode -shell-escape "
-SRCDIR = $(realpath $(dir $<))
-DEST = $(abspath ../../output)
-#TEXDIR = $(abspath ../tex)
-
-# add citations with:
-# --biblio file.bib --csl chicago-author-date.csl 
-
-all: $(HTML_FILES) $(PDF_FILES)
+all: ${HTML_FILES} ${PDF_FILES}
 
 %.md: %.Pnw
 	Pweave -f pandoc -c $<
 
-%.md: %.tex
-	pandoc -f latex -t markdown$(PANDOC_EXTS) $(PANDOC_OPTIONS) -o $@ $<
+%.md: ${TEX_DIR}/%.tex
+	pandoc -f latex -t markdown${PANDOC_EXTS} ${PANDOC_OPTIONS} -o $@ $<
 
-%.html: %.md $(HTML_DEPS)
-	pandoc -f markdown$(PANDOC_EXTS) -t html $(PANDOC_OPTIONS) -o $@ $<
+%.ipynb: %.md
+	notedown $< > $@
 
-%.tex: %.texw
-	Pweave -f texminted -c -d $<
-	#Rscript --vanilla --default-packages=stats,base,knitr,knitron -e 'opts_chunk$$set(out.format="latex"); knit("$<", "$(addsuffix .tex, $(basename $<))")'
+%.html: %.md ${HTML_DEPS}
+	pandoc -f markdown${PANDOC_EXTS} -t html ${PANDOC_OPTIONS} -o $@ $<
 
-%.pdf: %.tex
-	@max_print_line=1000 error_line=254 half_error_line=238 openout_any=a\
-  							 latexmk -pdf -bibtex -pdflatex=$(PDFLATEX)\
-		-jobname=$(DEST)/$(<:%.tex=%)\
-		-use-make\
-		$(realpath $<)
+%.tex: ${TEX_DIR}/%.tex ;
 
-#../tex/%.tex: %.rnw
-#	R -e 'library(knitr); knit("$<")'
-#	mv -f $(addsuffix .tex, $(basename $<)) $(TEXDIR)
+${TEX_DIR}/%.tex: %.texw
+	Pweave -F $(FIG_DIR) -f texminted -s ipython -o ${TEX_DIR}/$(addsuffix .tex, $(basename $<)) -c -d $<
 
-#%.pdf: ../tex/%.tex
-#	# in the case that the file was knit'ed outside of this Makefile
-#	# and not moved to the tex directory, move it now.
-#	-mv -f $(addsuffix .tex, $(basename $<)) $(TEXDIR)
-#	make -C $(TEXDIR) -f Makefile $@
+%.pdf: ${DEST_DIR}/%.pdf ;
 
-clean: clean-tex clean-pweave clean-html clean-md
+${DEST_DIR}/%.pdf: ${TEX_DIR}/%.tex
+	make -C ${TEX_DIR} -f Makefile $@
 
 clean-html:
 	-$(RM) *.html
@@ -82,11 +71,7 @@ clean-html:
 clean-md:
 	-$(RM) *.html
 
-clean-tex:
-	-cd $(DEST) && latexmk -f -C -bibtex ${PDF_FILES}
-	-latexmk -f -C -bibtex ${PDF_FILES} 
+clean-pdf:
+	make -C ${TEX_DIR} -f Makefile clean
 
-clean-pweave:
-	-$(RM) -rf cache
-	-$(RM) -rf figures
-
+clean: clean-pdf clean-html clean-md
