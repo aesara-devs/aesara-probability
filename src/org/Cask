@@ -7,6 +7,4 @@
 (depends-on "s")
 (depends-on "projectile")
 (depends-on "ob-ipython")
-
-;; (depends-on "cl-lib")
-;; (depends-on "dash")
+(depends-on "org-ref")

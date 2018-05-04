@@ -1,0 +1,140 @@
+#+TITLE: An Org-mode Document
+#+AUTHOR: Brandon T. Willard
+#+DATE: 2018-05-03
+#+EMAIL: brandonwillard@gmail.com
+
+#+OPTIONS: ^:nil toc:nil tex:t d:results
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+
+#+PROPERTY: header-args :eval never-export :exports both :results output drawer replace
+#+PROPERTY: header-args+ :session
+
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="../extra/custom.css" />
+
+#+LaTeX_CLASS: article
+#+LaTeX_HEADER: \usepackage{amsfonts}
+#+LaTeX_HEADER: \usepackage{setspace}
+#+LaTeX_HEADER: \usepackage{amsthm}
+#+LaTeX_HEADER: \usepackage{mathtools}
+#+LaTeX_HEADER: \usepackage{subcaption}
+#+LaTeX_HEADER: \usepackage{suffix}
+#+LaTeX_HEADER: \RequirePackage{color}
+#+LaTeX_HEADER: \usepackage{adjustbox}
+
+#+LaTeX_HEADER: \include{math-commands}
+
+#+LaTeX_HEADER_EXTRA: \usepackage{todonotes}
+#+LATEX_HEADER_EXTRA: \usepackage{draftwatermark}
+#+LATEX_HEADER_EXTRA: \SetWatermarkScale{1}
+#+LATEX_HEADER_EXTRA: \SetWatermarkLightness{0.90}
+#+LATEX_HEADER_EXTRA: \definecolor{bg}{rgb}{0.95,0.95,0.95}
+
+#+LaTeX_HEADER_EXTRA: \definecolor{bg}{rgb}{0.95,0.95,0.95}
+
+#+LaTeX_HEADER_EXTRA: \usepackage[authoryear]{natbib}
+#+LaTeX_HEADER_EXTRA: \usepackage{cleveref}
+
+#+LaTeX_HEADER_EXTRA: \allowdisplaybreaks
+#+LaTeX_HEADER_EXTRA: \setkeys{Gin}{keepaspectratio}
+#+LaTeX_HEADER_EXTRA: \graphicspath{{../../figures/}{../figures/}{./figures/}{./}}
+
+# Minted should be imported automatically by org-mode when YY is Y.
+#+LaTeX_HEADER_EXTRA: \setminted{fontsize=\footnotesize, breaklines=true, breakanywhere=true, breakautoindent=true}
+
+# This env is really useful if you want to force tables into the page width.
+#+LaTeX_HEADER_EXTRA: \usepackage{adjustbox}
+#+LaTeX_HEADER_EXTRA: \newenvironment{adjusttabular}[1]{\begin{adjustbox}{max width=1.0\textwidth,tabular=#1}}{\end{adjustbox}}
+
+# This is how we produce multi-page listings that use minted.
+#+LaTeX_HEADER_EXTRA: \usepackage{tcolorbox}
+#+LaTeX_HEADER_EXTRA: \tcbuselibrary{minted, listings, breakable, skins}
+#+BEGIN_EXPORT latex
+%\AtBeginDocument{%
+  \renewtcblisting[blend into=listings]{listing}[1][]{
+    breakable,
+    enhanced,
+    arc=0pt,
+    outer arc=0pt,
+    boxrule=0pt,
+    text only,
+    listing remove caption=false,
+    coltitle=black,
+    % boxed title style={empty, size=minimal},
+    % attach boxed title to bottom center={yshift=-10pt},
+    float,
+    floatplacement=\ifx\relax#1\relax htb\else #1\fi
+  }
+%}
+#+END_EXPORT
+
+#+LaTeX_HEADER: \usepackage[authoryear]{natbib}
+#+LaTeX_HEADER: \usepackage{cleveref}
+
+#+LaTeX_HEADER: \allowdisplaybreaks
+#+LaTeX_HEADER: \setkeys{Gin}{keepaspectratio}
+#+LaTeX_HEADER: \include{math-commands}
+#+LaTeX_HEADER: \graphicspath{{../../figures/}{../figures/}{./figures/}{./}}
+
+#+BEGIN_abstract
+  Here's the abstract.
+#+END_abstract
+
+# For pandas-to-org-table conversion.
+#+BEGIN_SRC python :exports none :results none
+from tabulate import tabulate
+#+END_SRC
+
+* Introduction
+
+  This is an example with a reference to [[citep:somepaper2018]].
+
+  #+NAME: python_setup
+  #+BEGIN_SRC python :exports code :results none
+  import numpy as np
+  import pandas as pd
+  #+END_SRC
+
+  [[Cref:table_example]] demonstrates a listings setup that can span multiple pages.
+  It's not perfect (e.g. the caption is weird with a colored background)
+  #+ATTR_LATEX: :float nil
+  #+CAPTION: Example of a src_python[:eval never]{DataFrame}.
+  #+NAME: table_example
+  #+BEGIN_SRC python :exports both :results raw table
+  test_table = pd.DataFrame([(1, 'a'), (2, 'b')], index=['x', 'y'], columns=['col1', 'col2'])
+  print(tabulate(test_table, tablefmt='orgtbl', headers='keys', showindex=None))
+  #+END_SRC
+
+  #+CAPTION: A table generated from the src_python[:eval never]{DataFrame} in [[Cref:table_example]].
+  #+NAME: tab:table_example
+  #+ATTR_LATEX: :mode table :float t :center t :environment adjusttabular
+  #+RESULTS: table_example
+  | col1 | col2 |
+  |------+------|
+  |    1 | a    |
+  |    2 | b    |
+
+  [[Cref:tab:table_example]] uses the custom =adjusttabular= environment (created in LaTeX),
+  which forces tables to text width.
+
+* Conclusion
+
+  A conclusion goes here.
+
+* References
+<<bibliography link>>
+
+#+NAME: bib_file
+#+BEGIN_SRC elisp :eval t :exports results :results value drawer replace
+(let* ((project-root (ignore-errors (projectile-project-root)))
+       (file-name (car-safe (ignore-errors (f-glob "src/tex/*.bib" project-root)))))
+  (when (and file-name
+             (f-exists? file-name))
+    (concat "bibliography:" (f-relative file-name))))
+#+END_SRC
+
+#+BEGIN_SRC elisp :eval t :exports results :results value drawer replace
+(if (eq org-export-current-backend 'latex)
+    "bibliographystyle:plainnat"
+  "bibliographystyle:unsrt")
+#+END_SRC
