@@ -44,13 +44,20 @@
 
 # This env is really useful if you want to force tables into the page width.
 #+LaTeX_HEADER_EXTRA: \usepackage{adjustbox}
-#+LaTeX_HEADER_EXTRA: \newenvironment{adjusttabular}[1]{\begin{adjustbox}{max width=1.0\textwidth,tabular=#1}}{\end{adjustbox}}
+#+LaTeX_HEADER_EXTRA: \newenvironment{adjusttabular}[1]{\begin{adjustbox}{max width=\maxtabfigwidth,max totalheight=\maxtabfigheight,center,tabular=#1}}{\end{adjustbox}}
+#+LaTeX_HEADER_EXTRA: \newlength{\maxtabfigwidth}
+#+LaTeX_HEADER_EXTRA: \newlength{\maxtabfigheight}
 
 # This is how we produce multi-page listings that use minted.
 #+LaTeX_HEADER_EXTRA: \usepackage{tcolorbox}
 #+LaTeX_HEADER_EXTRA: \tcbuselibrary{minted, listings, breakable, skins}
 #+BEGIN_EXPORT latex
 %\AtBeginDocument{%
+  \setlength{\maxtabfigwidth}{\textwidth}
+  \setlength{\maxtabfigheight}{\textheight}
+  % decrease height a bit letting captions fit to one page
+  \addtolength{\maxtabfigheight}{-2.5em}
+
   \renewtcblisting[blend into=listings]{listing}[1][]{
     breakable,
     enhanced,
@@ -168,9 +175,15 @@
   |    1 |    2 |    3 |    4 |    5 |    6 |    7 |    8 |    9 |   10 |    11 |    12 |    13 |    14 |    15 |    16 |    17 |    18 |    19 |    20 |    21 |    22 |    23 |    24 |    25 |    26 |    27 |    28 |    29 |    30 |    31 |    32 |    33 |    34 |    35 |    36 |    37 |    38 |    39 |    40 |
 
 
-
   [[Cref:tab:table_example]] uses the custom =adjusttabular= environment (created in LaTeX),
   which forces tables to text width.
+
+  \begin{equation}
+     \int_0^\infty e^x dx
+  \label{eq:an-equation}
+  \end{equation}
+
+  [[Cref:eq:an-equation]] is a numbered equation!
 
 * Conclusion
 
