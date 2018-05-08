@@ -189,12 +189,21 @@
 
   A conclusion goes here.
 
+# Use the following to pull in the org-ref customizations that make the following
+# keywords/options work.
+#+BEGIN_SRC elisp :exports results :results replace drawer output :wrap "SRC elisp :exports none :results none"
+(with-current-buffer
+    (url-retrieve-synchronously "https://gist.github.com/brandonwillard/14abe113d993cd3270c6046c6a98bcc5/raw")
+  (delete-region (point) url-http-end-of-headers)
+  (princ (buffer-string)))
+#+END_SRC
 
-# This is a hackish way to get `org-ref` working.
-#+BIBLIOGRAPHY: ../tex/example-document
+#+BIBLIOGRAPHY: ../tex/example-document.bib
+#+BIBLIOGRAPHYSTYLE: plainnat
 
+# If you're using the default org-ref, try the following:
 #+NAME: org_ref_bib_settings
-#+BEGIN_SRC elisp :eval t :exports results :results value raw
+#+BEGIN_SRC elisp :eval never :exports results :results value raw
 (or (when-let* ((project-root (ignore-errors (projectile-project-root)))
                 (file-name (car-safe (ignore-errors (f-glob "src/tex/*.bib" project-root))))
                 (bib-style (if (eq org-export-current-backend 'latex)
@@ -202,7 +211,7 @@
                              (concat "* References\nbibliographystyle:unsrt"))))
       (concat bib-style
               "\n"
-              ;; Bug in `org-ref' requires that we split this string.
+              ;; Bug in \`org-ref' requires that we split this string.
               "bibl" "iography:" (f-filename file-name)))
     "")
 #+END_SRC
