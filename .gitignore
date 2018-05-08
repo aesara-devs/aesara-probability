@@ -1,4 +1,7 @@
 data/
+.build/
+_minted-*/
+auto/
 out[put]/
 figure[s]/
 *cache/
