@@ -85,7 +85,6 @@
 
   #+NAME: python_setup
   #+BEGIN_SRC python :exports code :results none
-
   import numpy as np
   import pandas as pd
   from tabulate import tabulate
@@ -185,17 +184,48 @@
 
   [[Cref:eq:an-equation]] is a numbered equation!
 
+  [[Cref:fig:example_figure]] is a figure!
+
+  #+NAME: example_figure
+  #+BEGIN_SRC python :eval never-export :exports results :results raw value file
+  figures_dir = '../../figures'
+  graph_out_filename = os.path.join(os.path.relpath(figures_dir), 'example_figure.pdf')
+
+  _ = plt.figure()
+  _ = plt.plot(np.arange(10))
+  _ = plt.savefig(graph_out_filename)
+  _ = plt.close()
+
+  graph_out_filename
+  #+END_SRC
+
+  #+ATTR_ORG: :width 600
+  #+ATTR_LATEX: :width 1.0\textwidth :float t
+  #+CAPTION: A caption for a figure!
+  #+NAME: fig:example_figure
+  #+RESULTS: example_figure
+  [[file:../../figures/example_figure.pdf]]
+
 * Conclusion
 
   A conclusion goes here.
 
 # Use the following to pull in the org-ref customizations that make the following
 # keywords/options work.
-#+BEGIN_SRC elisp :exports results :results replace drawer output :wrap "SRC elisp :exports none :results none"
+#+BEGIN_SRC elisp :eval never-export :exports results :results replace drawer output :wrap "SRC elisp :eval t :exports none :results none"
 (with-current-buffer
     (url-retrieve-synchronously "https://gist.github.com/brandonwillard/14abe113d993cd3270c6046c6a98bcc5/raw")
   (delete-region (point) url-http-end-of-headers)
+  ;; (eval-buffer)
   (princ (buffer-string)))
+#+END_SRC
+
+# Undo the above changes.
+#+BEGIN_SRC elisp :eval never-export
+(setq org-export-options-alist (assq-delete-all :bibliography org-export-options-alist))
+(setq org-export-options-alist (assq-delete-all :bibliographystyle org-export-options-alist))
+(advice-remove 'org-ref-find-bibliography 'btw//org-ref-find-bibliography)
+(remove-hook 'org-export-filter-parse-tree-functions 'btw//org-ref-parse-bib-latex-entries)
 #+END_SRC
 
 #+BIBLIOGRAPHY: ../tex/example-document.bib
