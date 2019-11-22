@@ -3,6 +3,7 @@
 #+DATE: 2018-05-03
 #+EMAIL: brandonwillard@gmail.com
 
+#+STARTUP: hideblocks indent hidestars
 #+OPTIONS: ^:nil toc:nil tex:t d:results
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
@@ -12,207 +13,155 @@
 
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="../extra/custom.css" />
 
-#+LaTeX_CLASS: article
-#+LaTeX_HEADER: \usepackage{amsfonts}
-#+LaTeX_HEADER: \usepackage{setspace}
-#+LaTeX_HEADER: \usepackage{amsthm}
-#+LaTeX_HEADER: \usepackage{mathtools}
-#+LaTeX_HEADER: \usepackage{subcaption}
-#+LaTeX_HEADER: \usepackage{suffix}
-#+LaTeX_HEADER: \RequirePackage{color}
-#+LaTeX_HEADER: \usepackage{adjustbox}
-
-#+LaTeX_HEADER: \include{math-commands}
-
-#+LaTeX_HEADER_EXTRA: \usepackage{todonotes}
-#+LATEX_HEADER_EXTRA: \usepackage{draftwatermark}
-#+LATEX_HEADER_EXTRA: \SetWatermarkScale{1}
-#+LATEX_HEADER_EXTRA: \SetWatermarkLightness{0.90}
-#+LATEX_HEADER_EXTRA: \definecolor{bg}{rgb}{0.95,0.95,0.95}
-
-#+LaTeX_HEADER_EXTRA: \definecolor{bg}{rgb}{0.95,0.95,0.95}
-
-#+LaTeX_HEADER_EXTRA: \usepackage[authoryear]{natbib}
-#+LaTeX_HEADER_EXTRA: \usepackage{cleveref}
-
-#+LaTeX_HEADER_EXTRA: \allowdisplaybreaks
-#+LaTeX_HEADER_EXTRA: \setkeys{Gin}{keepaspectratio}
-#+LaTeX_HEADER_EXTRA: \graphicspath{{../../figures/}{../figures/}{./figures/}{./}}
-
-# Minted should be imported automatically by org-mode when YY is Y.
-#+LaTeX_HEADER_EXTRA: \setminted{fontsize=\footnotesize, breaklines=true, breakanywhere=true, breakautoindent=true}
-
-# This env is really useful if you want to force tables into the page width.
-#+LaTeX_HEADER_EXTRA: \usepackage{adjustbox}
-#+LaTeX_HEADER_EXTRA: \newenvironment{adjusttabular}[1]{\begin{adjustbox}{max width=\maxtabfigwidth,max totalheight=\maxtabfigheight,center,tabular=#1}}{\end{adjustbox}}
-#+LaTeX_HEADER_EXTRA: \newlength{\maxtabfigwidth}
-#+LaTeX_HEADER_EXTRA: \newlength{\maxtabfigheight}
-
-# This is how we produce multi-page listings that use minted.
-#+LaTeX_HEADER_EXTRA: \usepackage{tcolorbox}
-#+LaTeX_HEADER_EXTRA: \tcbuselibrary{minted, listings, breakable, skins}
-#+BEGIN_EXPORT latex
-%\AtBeginDocument{%
-  \setlength{\maxtabfigwidth}{\textwidth}
-  \setlength{\maxtabfigheight}{\textheight}
-  % decrease height a bit letting captions fit to one page
-  \addtolength{\maxtabfigheight}{-2.5em}
-
-  \renewtcblisting[blend into=listings]{listing}[1][]{
-    breakable,
-    enhanced,
-    arc=0pt,
-    outer arc=0pt,
-    boxrule=0pt,
-    text only,
-    listing remove caption=false,
-    coltitle=black,
-    % boxed title style={empty, size=minimal},
-    % attach boxed title to bottom center={yshift=-10pt},
-    float,
-    floatplacement=\ifx\relax#1\relax htb\else #1\fi
-  }
-%}
-#+END_EXPORT
+#+INCLUDE: latex-setup.org
+#+BEGIN_SRC elisp :eval t :exports none :results none
+(org-babel-lob-ingest "org-babel-extensions.org")
+#+END_SRC
 
 #+BEGIN_abstract
-  Here's the abstract.
+Here's the abstract.
 #+END_abstract
 
 * Introduction
+:PROPERTIES:
+:CUSTOM_ID: sec:introduction
+:END:
 
-  This is an example with a reference to [[citet:somepaper2018]].
+This is an example with a reference to [[citet:somepaper2018]].
 
-  #+NAME: python_setup
-  #+BEGIN_SRC python :exports code :results none
-  import numpy as np
-  import pandas as pd
-  from tabulate import tabulate
-  #+END_SRC
+#+NAME: python_setup
+#+BEGIN_SRC python :exports code :results none
+import matplotlib.pyplot as plt
 
-  [[Cref:table_example]] demonstrates a listings setup that can span multiple pages.
-  It's not perfect, though (e.g. the caption is included in the colored background).
+import numpy as np
+import pandas as pd
 
-  #+ATTR_LATEX: :float nil
-  #+CAPTION: Example of a src_python[:eval never]{DataFrame}.
-  #+NAME: table_example
-  #+BEGIN_SRC python :exports both :results raw table
-  test_table = pd.DataFrame([[i + 1 for i in range(40)] for i in range(2)] ,
-                            index=['a', 'b'],
-                            columns=['col{}'.format(i) for i in range(40)])
+from tabulate import tabulate
+#+END_SRC
 
-  # A really long comment
-  #
-  #
-  #
-  #
-  # ok
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  #
-  # This should span two pages, but the listing output doesn't get cut off.
+[[Cref:table_example]] demonstrates a listings setup that can span multiple pages.
+It's not perfect, though (e.g. the caption is included in the colored background).
 
-  print(tabulate(test_table, tablefmt='orgtbl', headers='keys', showindex=None))
-  #+END_SRC
+#+ATTR_LATEX: :float t :placement p
+#+CAPTION: Example of a src_python[:eval never]{DataFrame}.
+#+NAME: table_example
+#+BEGIN_SRC python :exports both :results raw table
+test_table = pd.DataFrame([[i + 1 for i in range(40)] for i in range(2)] ,
+                          index=['a', 'b'],
+                          columns=['col{}'.format(i) for i in range(40)])
 
-  #+CAPTION: A table generated from the src_python[:eval never]{DataFrame} in [[Cref:table_example]].
-  #+NAME: tab:table_example
-  #+ATTR_LATEX: :mode table :float t :center t :environment adjusttabular
-  #+RESULTS: table_example
-  | col0 | col1 | col2 | col3 | col4 | col5 | col6 | col7 | col8 | col9 | col10 | col11 | col12 | col13 | col14 | col15 | col16 | col17 | col18 | col19 | col20 | col21 | col22 | col23 | col24 | col25 | col26 | col27 | col28 | col29 | col30 | col31 | col32 | col33 | col34 | col35 | col36 | col37 | col38 | col39 |
-  |------+------+------+------+------+------+------+------+------+------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------|
-  |    1 |    2 |    3 |    4 |    5 |    6 |    7 |    8 |    9 |   10 |    11 |    12 |    13 |    14 |    15 |    16 |    17 |    18 |    19 |    20 |    21 |    22 |    23 |    24 |    25 |    26 |    27 |    28 |    29 |    30 |    31 |    32 |    33 |    34 |    35 |    36 |    37 |    38 |    39 |    40 |
-  |    1 |    2 |    3 |    4 |    5 |    6 |    7 |    8 |    9 |   10 |    11 |    12 |    13 |    14 |    15 |    16 |    17 |    18 |    19 |    20 |    21 |    22 |    23 |    24 |    25 |    26 |    27 |    28 |    29 |    30 |    31 |    32 |    33 |    34 |    35 |    36 |    37 |    38 |    39 |    40 |
+# A really long comment
+#
+#
+#
+#
+# ok
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+# This should span two pages, but the listing output doesn't get cut off.
+
+print(tabulate(test_table, tablefmt='orgtbl', headers='keys', showindex=None))
+#+END_SRC
+
+#+CAPTION: A table generated from the src_python[:eval never]{DataFrame} in [[Cref:table_example]].
+#+NAME: tab:table_example
+#+ATTR_LATEX: :mode table :float t :center t :environment adjusttabular
+#+RESULTS: table_example
+| col0 | col1 | col2 | col3 | col4 | col5 | col6 | col7 | col8 | col9 | col10 | col11 | col12 | col13 | col14 | col15 | col16 | col17 | col18 | col19 | col20 | col21 | col22 | col23 | col24 | col25 | col26 | col27 | col28 | col29 | col30 | col31 | col32 | col33 | col34 | col35 | col36 | col37 | col38 | col39 |
+|------+------+------+------+------+------+------+------+------+------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------+-------|
+|    1 |    2 |    3 |    4 |    5 |    6 |    7 |    8 |    9 |   10 |    11 |    12 |    13 |    14 |    15 |    16 |    17 |    18 |    19 |    20 |    21 |    22 |    23 |    24 |    25 |    26 |    27 |    28 |    29 |    30 |    31 |    32 |    33 |    34 |    35 |    36 |    37 |    38 |    39 |    40 |
+|    1 |    2 |    3 |    4 |    5 |    6 |    7 |    8 |    9 |   10 |    11 |    12 |    13 |    14 |    15 |    16 |    17 |    18 |    19 |    20 |    21 |    22 |    23 |    24 |    25 |    26 |    27 |    28 |    29 |    30 |    31 |    32 |    33 |    34 |    35 |    36 |    37 |    38 |    39 |    40 |
 
 
-  [[Cref:tab:table_example]] uses the custom =adjusttabular= environment (created in LaTeX),
-  which forces tables to text width.
+[[Cref:tab:table_example]] uses the custom =adjusttabular= environment (created in LaTeX),
+which forces tables to text width.
 
-  \begin{equation}
-     \int_0^\infty e^x dx
-  \label{eq:an-equation}
-  \end{equation}
+\begin{equation}
+   \int_0^\infty e^x dx
+\label{eq:an-equation}
+\end{equation}
 
-  [[Cref:eq:an-equation]] is a numbered equation!
+[[Cref:eq:an-equation]] is a numbered equation!
 
-  [[Cref:fig:example_figure]] is a figure!
+[[Cref:fig:example_figure]] is a figure!
 
-  #+NAME: example_figure
-  #+BEGIN_SRC python :eval never-export :exports results :results raw value file
-  figures_dir = '../../figures'
-  graph_out_filename = os.path.join(os.path.relpath(figures_dir), 'example_figure.pdf')
+#+NAME: example_figure
+#+BEGIN_SRC python :eval never-export :exports results :results raw value file
+figures_dir = '../../figures'
+graph_out_filename = os.path.join(os.path.relpath(figures_dir), 'example_figure.pdf')
 
-  _ = plt.figure()
-  _ = plt.plot(np.arange(10))
-  _ = plt.savefig(graph_out_filename)
-  _ = plt.close()
+_ = plt.figure()
+_ = plt.plot(np.arange(10))
+_ = plt.savefig(graph_out_filename)
+_ = plt.close()
 
-  graph_out_filename
-  #+END_SRC
+graph_out_filename
+#+END_SRC
 
-  #+ATTR_ORG: :width 600
-  #+ATTR_LATEX: :width 1.0\textwidth :float t
-  #+CAPTION: A caption for a figure!
-  #+NAME: fig:example_figure
-  #+RESULTS: example_figure
-  [[file:../../figures/example_figure.pdf]]
+#+ATTR_ORG: :width 600
+#+ATTR_LATEX: :width 1.0\textwidth :float t
+#+CAPTION: A caption for a figure!
+#+NAME: fig:example_figure
+#+RESULTS: example_figure
+[[file:../../figures/example_figure.pdf]]
 
 * Conclusion
 
-  A conclusion goes here.
+A conclusion goes here.  Here's a [[sec:introduction][link]] to the introduction section.
 
-# Use the following to pull in the org-ref customizations that make the following
-# keywords/options work.
-#+BEGIN_SRC elisp :eval never-export :exports results :results replace drawer output :wrap "SRC elisp :eval t :exports none :results none"
+Use the following to pull in the ~org-ref~ customizations that make the following
+keywords/options work.
+#+BEGIN_SRC elisp :eval never :exports both :results replace drawer output :wrap "SRC elisp :eval t :exports none :results none"
 (with-current-buffer
     (url-retrieve-synchronously "https://gist.github.com/brandonwillard/14abe113d993cd3270c6046c6a98bcc5/raw")
   (delete-region (point) url-http-end-of-headers)
@@ -220,18 +169,17 @@
   (princ (buffer-string)))
 #+END_SRC
 
+Alternatively, one can use the customizations in the [[https://github.com/brandonwillard/org-btw][org-btw]] Emacs package.
+
 # Undo the above changes.
-#+BEGIN_SRC elisp :eval never-export
+#+BEGIN_SRC elisp :exports both :eval never
 (setq org-export-options-alist (assq-delete-all :bibliography org-export-options-alist))
 (setq org-export-options-alist (assq-delete-all :bibliographystyle org-export-options-alist))
 (advice-remove 'org-ref-find-bibliography 'btw//org-ref-find-bibliography)
 (remove-hook 'org-export-filter-parse-tree-functions 'btw//org-ref-parse-bib-latex-entries)
 #+END_SRC
 
-#+BIBLIOGRAPHY: ../tex/example-document.bib
-#+BIBLIOGRAPHYSTYLE: plainnat
-
-# If you're using the default org-ref, try the following:
+If you're using the default ~org-ref~ package, try the following:
 #+NAME: org_ref_bib_settings
 #+BEGIN_SRC elisp :eval never :exports results :results value raw
 (or (when-let* ((project-root (ignore-errors (projectile-project-root)))
@@ -245,3 +193,6 @@
               "bibl" "iography:" (f-filename file-name)))
     "")
 #+END_SRC
+
+#+BIBLIOGRAPHYSTYLE: plainnat
+#+BIBLIOGRAPHY: ../tex/example-document.bib
