@@ -10,11 +10,13 @@
 
 #+PROPERTY: header-args :eval never-export :exports both :results output drawer replace
 #+PROPERTY: header-args+ :session
+#+PROPERTY: header-args:latex :results html replace :exports results :eval yes
 
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="../extra/custom.css" />
 
 #+INCLUDE: latex-setup.org
 #+BEGIN_SRC elisp :eval t :exports none :results none
+;; If you want to load content from another org file...
 (org-babel-lob-ingest "org-babel-extensions.org")
 #+END_SRC
 
@@ -132,6 +134,26 @@ which forces tables to text width.
 \end{equation}
 
 [[Cref:eq:an-equation]] is a numbered equation!
+
+If you want the features provided by a LaTeX code block, but you also want the
+code block to be rendered as raw Markdown, HTML, etc., on export, just set the
+block(s) to ~:exports results~--and you might need to set ~:results html~, or
+another specific export type.
+
+#+BEGIN_SRC latex :exports results :results html
+\begin{equation}
+   \int_0^\infty e^x dx
+   \label{eq:an-equation}
+\end{equation}
+#+END_SRC
+
+#+RESULTS:
+#+begin_export html
+\begin{equation}
+   \int_0^\infty e^x dx
+   \label{eq:an-equation}
+\end{equation}
+#+end_export
 
 [[Cref:fig:example_figure]] is a figure!
 
