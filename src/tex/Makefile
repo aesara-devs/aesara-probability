@@ -19,7 +19,7 @@ PDFLATEX_CMD = "pdflatex -shell-escape -file-line-error -interaction=nonstopmode
 LATEXMK_OPTS = max_print_line=1000 error_line=254 half_error_line=238 openout_any=a
 
 LATEXMK = TEXINPUTS=${SRC_DIR}/tex:${TEXINPUTS} ${LATEXMK_OPTS} latexmk \
-          -recorder -quiet -pdf -dvi- -ps- -pv- -pvc- -bibtex-cond \
+          -recorder -pdf -dvi- -ps- -pv- -pvc- -bibtex-cond \
           -pdflatex=${PDFLATEX_CMD}
 
 all: ${PDF_FILES} ${BUNDLE_FILES}
