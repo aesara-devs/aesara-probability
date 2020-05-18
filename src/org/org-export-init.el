@@ -1,12 +1,20 @@
-(add-to-list 'load-path (or (getenv "CASK_DIR") "~/.cask"))
+(setq make-backup-files nil)
+(setq load-prefer-newer t)
+
+(setq backtrace-line-length 0
+  debug-on-error t)
+
+(let ((default-directory (or (getenv "CASK_LIB_DIR") ".cask")))
+  (normal-top-level-add-subdirs-to-load-path))
+
 (require 'cask)
+
 (cask-initialize "./")
+
+(require 'f)
 
 (setq working-dir (f-dirname (f-this-file)))
 (add-to-list 'load-path working-dir)
-
-(setq make-backup-files nil)
-(setq load-prefer-newer t)
 
 (require 'org)
 (require 'ox)

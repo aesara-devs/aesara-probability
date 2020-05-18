@@ -10,7 +10,7 @@
 
 #+PROPERTY: header-args :eval never-export :exports both :results output drawer replace
 #+PROPERTY: header-args+ :session
-#+PROPERTY: header-args:latex :results html replace :exports results :eval yes
+#+PROPERTY: header-args:latex :results raw replace :exports results :eval yes
 
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="../extra/custom.css" />
 
@@ -128,34 +128,19 @@ print(tabulate(test_table, tablefmt='orgtbl', headers='keys', showindex=None))
 [[Cref:tab:table_example]] uses the custom =adjusttabular= environment (created in LaTeX),
 which forces tables to text width.
 
-\begin{equation}
-   \int_0^\infty e^x dx
-\label{eq:an-equation}
-\end{equation}
-
-[[Cref:eq:an-equation]] is a numbered equation!
-
 If you want the features provided by a LaTeX code block, but you also want the
-code block to be rendered as raw Markdown, HTML, etc., on export, just set the
+code block to be rendered as raw LaTeX, Markdown, HTML, etc., on export, just set the
 block(s) to ~:exports results~--and you might need to set ~:results html~, or
 another specific export type.
 
-#+BEGIN_SRC latex :exports results :results html
+#+BEGIN_SRC latex
 \begin{equation}
-   \int_0^\infty e^x dx
+   \int_0^\infty x e^x dx
    \label{eq:an-equation}
 \end{equation}
 #+END_SRC
 
-#+RESULTS:
-#+begin_export html
-\begin{equation}
-   \int_0^\infty e^x dx
-   \label{eq:an-equation}
-\end{equation}
-#+end_export
-
-[[Cref:fig:example_figure]] is a figure!
+[[Cref:eq:an-equation]] is a numbered equation and [[Cref:fig:example_figure]] is a figure!
 
 #+NAME: example_figure
 #+BEGIN_SRC python :eval never-export :exports results :results raw value file
@@ -177,12 +162,7 @@ graph_out_filename
 #+RESULTS: example_figure
 [[file:../../figures/example_figure.pdf]]
 
-* Conclusion
-
-A conclusion goes here.  Here's a [[sec:introduction][link]] to the introduction section.
-
-Use the following to pull in the ~org-ref~ customizations that make the following
-keywords/options work.
+You can also pull in code from remote sites:
 #+BEGIN_SRC elisp :eval never :exports both :results replace drawer output :wrap "SRC elisp :eval t :exports none :results none"
 (with-current-buffer
     (url-retrieve-synchronously "https://gist.github.com/brandonwillard/14abe113d993cd3270c6046c6a98bcc5/raw")
@@ -191,30 +171,13 @@ keywords/options work.
   (princ (buffer-string)))
 #+END_SRC
 
-Alternatively, one can use the customizations in the [[https://github.com/brandonwillard/org-btw][org-btw]] Emacs package.
+* Conclusion
 
-# Undo the above changes.
-#+BEGIN_SRC elisp :exports both :eval never
-(setq org-export-options-alist (assq-delete-all :bibliography org-export-options-alist))
-(setq org-export-options-alist (assq-delete-all :bibliographystyle org-export-options-alist))
-(advice-remove 'org-ref-find-bibliography 'btw//org-ref-find-bibliography)
-(remove-hook 'org-export-filter-parse-tree-functions 'btw//org-ref-parse-bib-latex-entries)
-#+END_SRC
+A conclusion goes here.  Here's a [[#sec:introduction][link]] to the introduction section.
 
-If you're using the default ~org-ref~ package, try the following:
-#+NAME: org_ref_bib_settings
-#+BEGIN_SRC elisp :eval never :exports results :results value raw
-(or (when-let* ((project-root (ignore-errors (projectile-project-root)))
-                (file-name (car-safe (ignore-errors (f-glob "src/tex/*.bib" project-root))))
-                (bib-style (if (eq org-export-current-backend 'latex)
-                               "bibliographystyle:plainnat"
-                             (concat "* References\nbibliographystyle:unsrt"))))
-      (concat bib-style
-              "\n"
-              ;; Bug in \`org-ref' requires that we split this string.
-              "bibl" "iography:" (f-filename file-name)))
-    "")
-#+END_SRC
+For a more convenient bibliography integration, try the customizations in the
+[[https://github.com/brandonwillard/org-btw][src_elisp[:eval never]{org-btw}]]
+package.
 
 #+BIBLIOGRAPHYSTYLE: plainnat
 #+BIBLIOGRAPHY: ../tex/example-document.bib
