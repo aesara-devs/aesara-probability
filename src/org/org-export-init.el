@@ -1,15 +1,8 @@
 (setq make-backup-files nil)
 (setq load-prefer-newer t)
 
-(setq backtrace-line-length 0
-  debug-on-error t)
-
-(let ((default-directory (or (getenv "CASK_LIB_DIR") ".cask")))
-  (normal-top-level-add-subdirs-to-load-path))
-
-(require 'cask)
-
-(cask-initialize "./")
+(setq backtrace-line-length 50
+      debug-on-error t)
 
 (require 'f)
 
@@ -18,7 +11,6 @@
 
 (require 'org)
 (require 'ox)
-(require 'f)
 (require 'org-ref)
 (require 'org-ref+)
 (require 'ox-latex+)
@@ -37,8 +29,10 @@
 
 (setq org-latex-listings 'minted
       org-latex-prefer-user-labels t
+      org-edit-src-content-indentation 0
       org-confirm-babel-evaluate nil
       org-latex-packages-alist '(("" "minted"))
+      org-babel-tangle-use-relative-file-links t
       org-babel-default-inline-header-args '((:exports . "code") (:eval . "never") (:results . "none")))
 
 (setq debug-on-error t)
@@ -54,3 +48,8 @@
 (setq org-publish-use-timestamps-flag nil)
 
 (pp org-publish-project-alist)
+
+(defun org-babel-detangle-save ()
+  ;; In this case, the "PUB_FILE" env variable should be the .py file.
+  (org-babel-detangle (f-full (getenv "PUB_FILE")))
+  (save-buffer))
