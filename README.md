@@ -1,19 +1,16 @@
+# Probability measures in Aesara
 
-# Introduction
+This project contains documents in `org-mode` (`.org` files) that attempt to
+formalize the way random variables and probability measures are represented and
+manipulated across the Aesara projects: 
 
-This project provides a template layout for TeX-based projects.
-It contains subdirectories for different scripting languages and
-some example documents that use their respective `noweb` libraries.
-There are also some `Makefiles` that build/manage these documents
-in a unix-based system (Ubuntu, really).
+- [Aesara](https://github.com/aesara-devs/aesara)
+- [AePPL](https://github.com/aesara-devs/aeppl)
+- [AeMCMC](https://github.com/aesara-devs/aemcmc)
 
-# Dependencies
+# Building
 
-Each `noweb` file has it's own languages' dependencies, so
-look through those files to find out exactly what those are.
-Otherwise, this setup broadly assumes the following are
-installed:
-
-* [TeX Live](https://www.tug.org/texlive/)
-* [Pandoc](http://pandoc.org/)
-
+You will need Emacs (≥ 26), and, to build the PDFs, you'll need a full LaTeX
+distribution (e.g. TeXlive, Mactex). With those two basic requirements, you can
+use the make targets to automatically download the Emacs requirements and build
+the PDFs and/or the intermediate LaTeX files.

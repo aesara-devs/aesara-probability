@@ -1,0 +1,109 @@
+#+TITLE: Random Variables and Measures in Aesara
+#+AUTHOR: Rémi Louf and Brandon T. Willard
+#+DATE: 2022-11-30
+#+EMAIL: aesara.devs@gmail.com
+
+#+STARTUP: hideblocks indent hidestars
+#+OPTIONS: ^:nil toc:nil tex:t d:results
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+
+#+PROPERTY: header-args :eval never-export :exports both :results output drawer replace
+#+PROPERTY: header-args+ :session
+#+PROPERTY: header-args:latex :results raw replace :exports results :eval yes
+
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="../extra/custom.css" />
+
+#+INCLUDE: latex-setup.org
+#+BEGIN_SRC elisp :eval t :exports none :results none
+;; If you want to load content from another org file...
+(org-babel-lob-ingest "org-babel-extensions.org")
+#+END_SRC
+
+#+BEGIN_abstract
+In this document we lay out the theoretical foundations for the representation and manipulation of random variables and probabilistic measures across the Aesara projects. The goal is to provide the language and the tools necessary to build flexible and non-ambiguous representations of probabilistic models.
+#+END_abstract
+
+* Introduction
+:PROPERTIES:
+:CUSTOM_ID: sec:introduction
+:END:
+
+Let us first introduce the mathematical notions and notations that will be used throughout this document.
+
+* Random Variables
+:PROPERTIES:
+:CUSTOM_ID: sec:random-variables
+:END:
+
+Here we describe Aesara's =RandomVariable= as a map from RNG states to elements in the RV's domain. By tying the sample space $\Omega$ to the set of possible RNG states, we see that =RandomVariable= is /almost/ a random variable in the mathematical sense. Indeed, we only specify the =dtype= of =rng_fn= and not the destination manifold of the function.
+
+Also mention that =ndim_supp= and =ndims_params= will be replaced by a gufunc signature.
+
+Discuss the meaning of the result of =rng_fn= when the =size= argument is used.
+
+* Measures
+:PROPERTIES:
+:CUSTOM_ID: sec:measures
+:END:
+
+Here we describe how we define measures, and attach measures to existing =RandomVariable= objects. We need the manifold the =RandomVariable= maps to (/domain/), the base measure relative to which the density is computed.
+
+Manifolds: $\mathbb{R}$, $\mathbb{Z}$, $\left[a, b\right]$, $\mathbb{B}$, Circle (for future work), etc.
+
+Base measures: Counting measure, Lebesgue measure, Dirac (which has the counting measure as a base).
+
+Describe how densities are assigned to measures.
+
+How to compute a measure's density relative to another measure that is not the Lebesgue measure or the Counting measure.
+
+Use a variety of measures for the examples:
+
+- =Normal= defined on $\mathbb{R}$ with $\operatorname{Lebesgue}$ base measure;
+- =MultivariateNormal= defined on $\mathbb{R}^N$ with $\operatorname{Lebesgue}$ base measure;
+- =Beta= defined on $\left[0, 1\right]$ with $\operatorname{Lebesgue}$ base measure;
+- =Poisson= defined on $\mathbb{N}$ with $\operatorname{Counting}$ base measure;
+- =Bernoulli= defined on $\mathbb{B}$ with $\operatorname{Counting}$ base measure;
+- =Dirichlet= defined on the unit simplex with $\operatorname{Lebesgue}$ base measure;
+- =VonMisesFisher= distribution defined on the unit circle with $\operatorname{Lebesgue}$ base measure;
+
+* Transform random variables
+:PROPERTIES:
+:CUSTOM_ID: sec:transform-random-variables
+:END:
+
+Here we describe operations on =RandomVariable= to get the pushfoward measure of the transformed variables. How to account for non-$\mathbb{R}$ manifolds in future work. Functions that embed the =RandomVariable= in a different domain/manifold (Circle, Simplex, etc.)
+
+- Bijectors
+- Destructive operations such as =at.clip=
+
+* Transform measures
+:PROPERTIES:
+:CUSTOM_ID: sec:transform-measures
+:END:
+
+Here we describe the transformations that we can apply to measures (chaining, superposition, power measures, etc.), and to domains (truncation).
+
+* Equivalence between measures
+:PROPERTIES:
+:CUSTOM_ID: sec:measure-equivalence
+:END:
+
+Here we define the notion of equivalence between measures and how these equivalence relation are implemented in AePPL.
+
+* Canonical representation
+:PROPERTIES:
+:CUSTOM_ID: sec:canonical-representation
+:END:
+
+Here we define AePPL's canonical representation: first-class measures, and how derived measures are represented and implemented.
+
+* Disintegration (computing the density)
+:PROPERTIES:
+:CUSTOM_ID: sec:disintegration
+:END:
+
+Here we describe the disintegration process in =AePPL=. In particular, mention the dual measure/elements of the domain representation that is necessary to condition on transforms of random variables (the =ValuedVariable=s).
+
+#+BIBLIOGRAPHYSTYLE: plainnat
+#+BIBLIOGRAPHY: ../tex/aesara-probability.bib
